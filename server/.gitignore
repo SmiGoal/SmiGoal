@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### yml 파일 ###
-*.yml
+application.yml

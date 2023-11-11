@@ -1,5 +1,5 @@
 chatgpt:
-  api-key:
+  api-key: test
 
 #spring:
 #  datasource:
