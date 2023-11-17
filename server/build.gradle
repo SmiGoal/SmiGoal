@@ -25,6 +25,10 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+
+	// 크롤링
+	implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
