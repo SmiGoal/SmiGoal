@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class SMSService {
-  const SMSService(this.onReceived);
+  const SMSService(this.onReceive);
   static const platform = MethodChannel('com.example.smigoal/sms');
-  final Function(String, String, String) onReceived;
+  final Function(String, String, String) onReceive;
 
   void initialize() {
     platform.setMethodCallHandler(_onMethodCall);
@@ -19,7 +19,7 @@ class SMSService {
         final int timestamp = call.arguments['timestamp'];
         // 여기서 메시지 내용, 송신자, 시각 정보를 처리합니다.
         print("From ${sender}, ${timestamp}: Message: ${message}\n");
-        onReceived(sender, message, timestamp.toString());
+        onReceive(sender, message, timestamp.toString());
         break;
       default:
         print('Unknown method ${call.method}');

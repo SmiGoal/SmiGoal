@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
-import 'package:smigoal/function/sms_service.dart';
+import 'package:smigoal/models/message.dart';
 import 'package:smigoal/widgets/smigoal.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
@@ -19,9 +21,18 @@ Future<void> requestPermission() async {
   }
 }
 
-void main() async {
+void initApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await requestPermission();
+
+  final directory = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(directory.path);
+  Hive.registerAdapter(MessageAdapter());
+}
+
+void main() async {
+  initApp();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((fn) {
