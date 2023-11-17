@@ -20,16 +20,16 @@ public class CrawlingService {
 
     public String getURLContent(String url) {
         webDriver = WebDriverUtil.getChromeDriver();
-        List<WebElement> webElements = new ArrayList<>();
-        String query = "#id";
+        WebElement webElements=null;
+        String query = "body";
 
         if (!ObjectUtils.isEmpty(webDriver)){
             webDriver.get(url);
             webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 
-            webElements = webDriver.findElements(By.cssSelector(query));
+            webElements = webDriver.findElement(By.cssSelector(query));
         }
 
-        return webElements.get(0).getText();
+        return webElements.getText();
     }
 }
