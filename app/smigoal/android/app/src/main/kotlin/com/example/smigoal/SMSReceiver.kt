@@ -7,13 +7,12 @@ import android.provider.Telephony
 import android.util.Log
 import io.flutter.plugin.common.MethodChannel
 
-class SMSReceiver() : BroadcastReceiver() {
-    private lateinit var channel: MethodChannel
+class SMSReceiver(var channel: MethodChannel? = null) : BroadcastReceiver() {
+//    private lateinit var channel: MethodChannel
 
-    fun setMethodChannel(channel: MethodChannel) {
-        this.channel = channel
-    }
-
+//    fun setMethodChannel(channel: MethodChannel) {
+//        this.channel = channel
+//    }
     override fun onReceive(context: Context, intent: Intent) {
         if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION == intent.action) {
             for (smsMessage in Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
@@ -25,7 +24,7 @@ class SMSReceiver() : BroadcastReceiver() {
                 Log.i("msg", timestamp.toString())
 
                 // Flutter로 메시지 내용, 송신자, 시각 전달
-                channel.invokeMethod("onReceivedSMS", mapOf(
+                channel?.invokeMethod("onReceivedSMS", mapOf(
                     "message" to messageBody,
                     "sender" to sender,
                     "timestamp" to timestamp

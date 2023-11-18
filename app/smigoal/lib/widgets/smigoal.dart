@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:smigoal/function/sms_service.dart';
+import 'package:smigoal/functions/sms_service.dart';
 import 'package:smigoal/widgets/settings.dart';
 
 class SmiGoal extends StatefulWidget {
@@ -13,7 +13,7 @@ class SmiGoal extends StatefulWidget {
 class _SmiGoalState extends State<SmiGoal> {
   String message = "SmiGoal....";
   String sender = "KU";
-  String timestamp = DateTime.now().toString();
+  DateTime timestamp = DateTime.now();
 
   @override
   void initState() {
@@ -23,7 +23,7 @@ class _SmiGoalState extends State<SmiGoal> {
   }
 
   // Future<String> get message async {
-  void _getMessage(String message, String sender, String timestamp) {
+  void _getMessage(String message, String sender, DateTime timestamp) {
     setState(() {
       this.message = message;
       this.sender = sender;
@@ -45,7 +45,7 @@ class _SmiGoalState extends State<SmiGoal> {
           children: [
             Text(message),
             Text(sender),
-            Text(timestamp),
+            Text(timestamp.toString()),
           ],
         ),
       ),
