@@ -4,7 +4,7 @@ import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import smigoal.server.service.ChatService;
+import smigoal.server.service.GPTService;
 
 @RequiredArgsConstructor
 @RestController
@@ -12,8 +12,7 @@ import smigoal.server.service.ChatService;
 @RequestMapping("/api/chat-gpt")
 public class GPTController {
 
-    private final ChatService chatService;
-    private final ChatgptService chatgptService;
+    private final GPTService chatService;
 
     @PostMapping("")
     public String test(@RequestBody String question){
