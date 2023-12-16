@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class ChatService {
+public class GPTService {
     private final ChatgptService chatgptService;
 
     public String getChatResponse(String prompt){
