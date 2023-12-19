@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import smigoal.server.service.CrawlingService;
 import smigoal.server.service.GPTService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -19,20 +21,40 @@ public class MainController {
 
     @PostMapping("")
     public String smishingCheck(@RequestBody QuestionDTO request){
-        System.out.println(request.url);
-        System.out.println(request.message);
+//        System.out.println(request.url);
+//        System.out.println(request.message);
         String filterResult;
+        List<String> keyward;
+
         if (request.url==null && request.message==null){
             return "error";
         }else if(request.url!=null){
+            System.out.println("case 2---------------------------");
             String urlContent = crawlingService.getURLContent(request.url);
-            String keyward = chatService.getChatResponse(urlContent.substring(0,300));  // 조절 필요
-//            System.out.println(keyward);
-            filterResult = "true";  // 모델과 통신하여 필터링 결과 저장
+            System.out.println(urlContent);
+            if (urlContent.length()>1000)
+                urlContent = urlContent.substring(0,1000);
+            keyward = chatService.generateText(urlContent);  // 조절 필요
         }else{
-            String keyward = chatService.getChatResponse(request.message);
-            filterResult = "true";  // 모델과 통신하여 필터링 결과 저장
+            System.out.println("case 3---------------------------");
+            keyward = chatService.generateText(request.message);
         }
+
+        if (keyward==null){ // 키워드 추출 실패
+            return "false";
+        }
+
+        // 키워드 추출 확인
+        for (int i=0;i<keyward.size();i++){
+            System.out.println(keyward.get(i));
+        }
+
+        /**
+         * 모델 통신 코드
+         * 모델과 통신하여 filterResult에 필터링 결과 저장
+         */
+        filterResult = "true";  // 임시 필터링 결과 저장
+
         return filterResult;
     }
 
@@ -40,6 +62,9 @@ public class MainController {
     static class QuestionDTO{
         private String url;
         private String message;
+
+        public QuestionDTO() {
+        }
 
         public QuestionDTO(String url, String message) {
             this.url = url;

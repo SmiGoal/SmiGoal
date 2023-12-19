@@ -17,10 +17,11 @@ public class GPTController {
     @PostMapping("")
     public String test(@RequestBody String question){
         return chatService.getChatResponse(question);
+//        return chatService.generateText(question);
     }
 
-    @PostMapping("/getmodels")
-    public String test2(){
-        return chatService.generateText();
-    }
+//    @PostMapping("/getmodels")
+//    public String test2(){
+//        return chatService.generateText();
+//    }
 }
