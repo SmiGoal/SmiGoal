@@ -16,8 +16,8 @@ public class GPTController {
 
     @PostMapping("")
     public String test(@RequestBody String question){
-//        return chatService.getChatResponse(question);
-        return chatService.generateText(question);
+        return chatService.getChatResponse(question);
+//        return chatService.generateText(question);
     }
 
 //    @PostMapping("/getmodels")
