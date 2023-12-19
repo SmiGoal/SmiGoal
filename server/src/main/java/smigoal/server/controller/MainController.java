@@ -31,7 +31,10 @@ public class MainController {
         }else if(request.url!=null){
             System.out.println("case 2---------------------------");
             String urlContent = crawlingService.getURLContent(request.url);
-            keyward = chatService.generateText(urlContent.substring(0,300));  // 조절 필요
+            System.out.println(urlContent);
+            if (urlContent.length()>1000)
+                urlContent = urlContent.substring(0,1000);
+            keyward = chatService.generateText(urlContent);  // 조절 필요
         }else{
             System.out.println("case 3---------------------------");
             keyward = chatService.generateText(request.message);
