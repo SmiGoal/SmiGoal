@@ -117,23 +117,28 @@ public class CrawlingService {
 
         }
 
+        String result;
         if (depth2Div != null) {
-            String result = depth2Div.getText();
+            result = depth2Div.getText();
             if (webDriver != null) {
                 webDriver.quit();
             }
-            return result;
         } else if (depth1Div != null){
-            String result = depth1Div.getText();
+            result = depth1Div.getText();
             if (webDriver != null) {
                 webDriver.quit();
             }
-            return result;
         }else{
             if (webDriver != null) {
                 webDriver.quit();
             }
             return null;
         }
+
+        // 앞부분 자르기
+        if(result.length() >= 600){
+            result = result.substring(100);
+        }
+        return result;
     }
 }
