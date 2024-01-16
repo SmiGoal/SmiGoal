@@ -20,7 +20,7 @@ public class MainController {
     private final CrawlingService crawlingService;
 
     @PostMapping("")
-    public String smishingCheck(@RequestBody QuestionDTO request){
+    public String smishingCheck(@RequestBody QuestionDTO request) throws InterruptedException {
 //        System.out.println(request.url);
 //        System.out.println(request.message);
         String filterResult;

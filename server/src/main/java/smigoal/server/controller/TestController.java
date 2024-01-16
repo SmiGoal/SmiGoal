@@ -17,7 +17,7 @@ public class TestController {
     private final CrawlingService crawlingService;
 
     @PostMapping("")
-    public String test(@RequestBody String url){
+    public String test(@RequestBody String url) throws InterruptedException {
         System.out.println(url);
         String contents = crawlingService.getURLContent(url);
         return contents;
