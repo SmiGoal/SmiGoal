@@ -1,16 +1,14 @@
 package smigoal.server.service;
 
 import lombok.RequiredArgsConstructor;
-import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import smigoal.server.service.crawling.WebDriverUtil;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,7 +30,7 @@ public class CrawlingService {
         return null;    // null : 요소 찾기 실패
     }
 
-    public String getURLContent(String url) {
+    public String getURLContent(String url) throws InterruptedException {
         webDriver = WebDriverUtil.getChromeDriver();
         WebElement depth1Div=null;
         WebElement depth2Div=null;
@@ -62,6 +60,16 @@ public class CrawlingService {
                     depth1Div = div;
                     maxLength1 = length;
                 }
+            }
+
+            // 무한 스크롤 - depth1Div에 대해 스크롤 끝까지 내리기
+            int SCROLL_PAUSE_TIME = 1500;
+            System.out.println("!!!");
+            var stTime = new Date().getTime(); //현재시간
+            while (new Date().getTime() < stTime + 10000) { // 10초 동안 무한스크롤 지속
+                Thread.sleep(SCROLL_PAUSE_TIME); //리소스 초과 방지
+                //executeScript: 해당 페이지에 JavaScript 명령을 보내는 거
+                ((JavascriptExecutor)webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)", depth1Div);
             }
 
             List<WebElement> divs2; // 주요 내용을 찾기 위해 깊은 탐색
