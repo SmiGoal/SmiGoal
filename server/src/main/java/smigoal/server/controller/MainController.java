@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import smigoal.server.service.CrawlingService;
 import smigoal.server.service.GPTService;
+import smigoal.server.service.ModelService;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class MainController {
 
     private final GPTService chatService;
     private final CrawlingService crawlingService;
+    private final ModelService modelService;
 
     @PostMapping("")
     public String smishingCheck(@RequestBody QuestionDTO request) throws InterruptedException {
@@ -58,8 +60,13 @@ public class MainController {
         return filterResult;
     }
 
+    @PostMapping("/flask")
+    public String testflask(@RequestBody String requestData){
+        return modelService.callFlaskService(requestData);
+    }
+
     @Getter
-    static class QuestionDTO{
+    static class QuestionDTO {
         private String url;
         private String message;
 
