@@ -12,8 +12,8 @@ class SMSBackgroundService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i("msg", "서비스를 시작할것입니다...")
-
+        Log.i("test", "서비스를 시작할것입니다...")
+        //startForeground(NOTIFICATION_SERVICE)
         return START_STICKY
     }
 }
