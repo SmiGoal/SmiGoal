@@ -5,6 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+
 @Service
 public class ModelService {
 
@@ -18,7 +20,7 @@ public class ModelService {
                 .build();
     }
 
-    public String callFlaskService(String requestData) {
+    public String callFlaskService(List<String> requestData) {
         String response = webClient.post()
                 .uri("/test")
                 .bodyValue(requestData)
