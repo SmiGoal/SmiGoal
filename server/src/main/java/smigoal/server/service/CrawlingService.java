@@ -40,6 +40,7 @@ public class CrawlingService {
             webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 
             List<WebElement> divs = findElementSafely(webDriver, By.cssSelector("body > div"));
+            // div가 가장 범용적인것 같지만 div를 사용하지 않는 웹사이트의 경우 문제가 생길 수 있음
 
             if (divs.isEmpty()) {    // 최상위에 div가 없을 때
                 divs = findElementSafely(webDriver, By.tagName("div"));
@@ -62,7 +63,7 @@ public class CrawlingService {
                 }
             }
 
-            // 무한 스크롤 - depth1Div에 대해 스크롤 끝까지 내리기
+//             무한 스크롤 - depth1Div에 대해 스크롤 끝까지 내리기
             int SCROLL_PAUSE_TIME = 1500;
             System.out.println("!!!");
             var stTime = new Date().getTime(); //현재시간

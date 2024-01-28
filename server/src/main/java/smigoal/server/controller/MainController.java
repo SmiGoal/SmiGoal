@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import smigoal.server.service.CrawlingService;
 import smigoal.server.service.GPTService;
+import smigoal.server.service.ModelService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,12 +20,10 @@ public class MainController {
 
     private final GPTService chatService;
     private final CrawlingService crawlingService;
+    private final ModelService modelService;
 
     @PostMapping("")
     public String smishingCheck(@RequestBody QuestionDTO request) throws InterruptedException {
-//        System.out.println(request.url);
-//        System.out.println(request.message);
-        String filterResult;
         List<String> keyward;
 
         if (request.url==null && request.message==null){
@@ -49,17 +49,15 @@ public class MainController {
             System.out.println(keyward.get(i));
         }
 
-        /**
-         * 모델 통신 코드
-         * 모델과 통신하여 filterResult에 필터링 결과 저장
-         */
-        filterResult = "true";  // 임시 필터링 결과 저장
+        // 모델 통신
+        String filterResult = modelService.callFlaskService(keyward);
+
 
         return filterResult;
     }
 
     @Getter
-    static class QuestionDTO{
+    static class QuestionDTO {
         private String url;
         private String message;
 
