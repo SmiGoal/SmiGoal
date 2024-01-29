@@ -15,14 +15,14 @@ class MainActivity : FlutterActivity() {
     private lateinit var smsReceiver: SMSReceiver
     private lateinit var channel: MethodChannel
 
-    private val isServiceRunning = Observer<Boolean> { isRunning ->
-        if (!isRunning) {
-            Log.i("test", "service 상태 변화 감지")
-            SMSServiceData.startSMSService(this@MainActivity)
-            SMSServiceData.isServiceRunning.postValue(true)
-            registerSMSService()
-        }
-    }
+//    private val isServiceRunning = Observer<Boolean> { isRunning ->
+//        if (!isRunning) {
+//            Log.i("test", "service 상태 변화 감지")
+//            SMSServiceData.startSMSService(this@MainActivity)
+//            SMSServiceData.isServiceRunning.postValue(true)
+//            registerSMSService()
+//        }
+//    }
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         init(flutterEngine)
@@ -30,6 +30,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun init(flutterEngine: FlutterEngine) {
+        Log.i("test", "Main->init")
         channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
         smsReceiver = SMSReceiver(channel)
     }
@@ -41,11 +42,12 @@ class MainActivity : FlutterActivity() {
         }
         registerReceiver(smsReceiver, filter)
 //        val backgroundServiceIntent = Intent(this, SMSBackgroundService::class.java)
-        val foregroundServiceIntent = Intent(this, SMSForegroundService::class.java)
-
-        Log.i("test", "main launched")
-//        startService(backgroundServiceIntent)
-        startService(foregroundServiceIntent)
+//        SMSServiceData.startSMSService(this)
+//        val foregroundServiceIntent = Intent(this, SMSForegroundService::class.java)
+//
+//        Log.i("test", "main launched")
+////        startService(backgroundServiceIntent)
+//        startService(foregroundServiceIntent)
     }
 
     // 필요에 따라 onDestroy에서 SMSReceiver 해제

@@ -28,6 +28,7 @@ class _SmiGoalState extends State<SmiGoal> {
       this.message = message;
       this.sender = sender;
       this.timestamp = timestamp;
+      
     });
   }
 

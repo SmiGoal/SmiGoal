@@ -1,8 +1,10 @@
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'request_server.dart';
 import 'package:smigoal/main.dart';
 
 class SMSService {
-  const SMSService(this.onReceive);
+  SMSService(this.onReceive);
   static const platform = MethodChannel('com.example.smigoal/sms');
   final Function(String, String, DateTime) onReceive;
 
@@ -22,6 +24,7 @@ class SMSService {
         print("From ${sender}, ${timestamp}: Message: ${message}\n");
         onReceive(sender, message, timestamp);
         notification.showNotification(message, sender);
+        RequestServer().postData(sender, message, timestamp);
         break;
       default:
         print('Unknown method ${call.method}');

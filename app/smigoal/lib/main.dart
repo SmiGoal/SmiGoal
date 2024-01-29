@@ -69,7 +69,7 @@ Future<void> initializeService() async {
   //         AndroidFlutterLocalNotificationsPlugin>()
   //     ?.createNotificationChannel(channel);
 
-  await backgroundService.configure(
+  /*await backgroundService.configure(
     androidConfiguration: AndroidConfiguration(
       // this will be executed when app is in foreground or background in separated isolate
       onStart: onStart,
@@ -78,7 +78,7 @@ Future<void> initializeService() async {
       autoStart: true,
       isForegroundMode: true,
 
-      notificationChannelId: 'SmiGoal Foreground Service',
+      notificationChannelId: 'SmiGoal Notification Channel ID',
       initialNotificationTitle: 'SmiGoal 작동 중',
       initialNotificationContent: 'SmiGoal이 당신의 안전을 책임지는 중입니다!',
       foregroundServiceNotificationId: 55,
@@ -93,7 +93,7 @@ Future<void> initializeService() async {
       // you have to enable background fetch capability on xcode project
       onBackground: onIosBackground,
     ),
-  );
+  );*/
 }
 
 // to ensure this is executed
@@ -143,7 +143,7 @@ void onStart(ServiceInstance service) async {
   });
 
   // bring to foreground
-  Timer.periodic(const Duration(seconds: 1), (timer) async {
+  /*Timer.periodic(const Duration(seconds: 1), (timer) async {
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
         /// OPTIONAL for use custom notification
@@ -194,7 +194,7 @@ void onStart(ServiceInstance service) async {
         "device": device,
       },
     );
-  });
+  });*/
 }
 
 void callbackDispatcher() {
