@@ -3,8 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class NotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  static const String _channel =
-      "com.google.firebase.messaging.notification_channel_id";
+  static const String _channel = "SmiGoal Notification Channel ID";
   static const String _name = "SmiGoal";
   static const String _description = "Alert Result of Smishing Detection";
 
