@@ -21,7 +21,7 @@ class SMSService {
         // 여기서 메시지 내용, 송신자, 시각 정보를 처리합니다.
         print("From ${sender}, ${timestamp}: Message: ${message}\n");
         onReceive(sender, message, timestamp);
-        notification.showNotification(message, sender);
+        // notification.showNotification(message, sender);
         break;
       default:
         print('Unknown method ${call.method}');
