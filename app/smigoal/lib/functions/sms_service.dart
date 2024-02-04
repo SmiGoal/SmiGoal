@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:smigoal/main.dart';
 
+import '../models/message.dart';
+
 class SMSService {
   const SMSService(this.onReceive);
   static const platform = MethodChannel('com.example.smigoal/sms');
@@ -21,6 +23,16 @@ class SMSService {
         // 여기서 메시지 내용, 송신자, 시각 정보를 처리합니다.
         print("From ${sender}, ${timestamp}: Message: ${message}\n");
         onReceive(sender, message, timestamp);
+        // print('result: ${requestServer.extractUrl(message)}${requestServer.containsUrl(message)}');
+        requestServer.saveMessage(Message(
+          sender: sender,
+          content: message,
+          timestamp: timestamp,
+          containsUrl: false
+        ));
+        List<Message> l = await requestServer.getMessages();
+        print('From Box');
+        l.forEach((element) { print(element.content); });
         // notification.showNotification(message, sender);
         break;
       default:
