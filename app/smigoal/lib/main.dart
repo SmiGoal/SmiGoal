@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:smigoal/models/message.dart';
 import 'package:smigoal/widgets/smigoal.dart';
 
-import 'functions/request_server.dart';
+import 'models/message_db.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 96, 59, 181),
@@ -17,7 +17,7 @@ var kDarkColorScheme = ColorScheme.fromSeed(
   brightness: Brightness.dark,
   seedColor: const Color.fromARGB(255, 5, 99, 155),
 );
-final requestServer = RequestServer();
+final requestServer = MessageDB();
 // final permissions = [Permission.sms, Permission.notification];
 // final notification = NotificationService();
 //

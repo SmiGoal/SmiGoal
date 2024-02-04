@@ -13,6 +13,7 @@ class SmiGoal extends StatefulWidget {
 class _SmiGoalState extends State<SmiGoal> {
   String message = "SmiGoal....";
   String sender = "KU";
+  String result = "Unknown";
   DateTime timestamp = DateTime.now();
 
   @override
@@ -23,10 +24,11 @@ class _SmiGoalState extends State<SmiGoal> {
   }
 
   // Future<String> get message async {
-  void _getMessage(String message, String sender, DateTime timestamp) {
+  void _getMessage(String message, String sender, String result, DateTime timestamp) {
     setState(() {
       this.message = message;
       this.sender = sender;
+      this.result = result;
       this.timestamp = timestamp;
     });
   }
@@ -45,6 +47,7 @@ class _SmiGoalState extends State<SmiGoal> {
           children: [
             Text(message),
             Text(sender),
+            Text(result),
             Text(timestamp.toString()),
           ],
         ),
