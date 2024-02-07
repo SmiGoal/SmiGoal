@@ -30,6 +30,41 @@ public class CrawlingService {
         return null;    // null : 요소 찾기 실패
     }
 
+    private String getTableContent(WebDriver webDriver){
+        List<WebElement> tables = findElementSafely(webDriver, By.cssSelector("table"));
+        WebElement depth1Table=null;
+        int maxLengthTable = 0;
+
+        if (tables.isEmpty()){
+            if (webDriver != null) {
+                webDriver.quit();
+            }
+            return null;
+        }
+
+        for (WebElement table : tables) {
+            int length = table.getText().length();
+            if (length > maxLengthTable) {
+                depth1Table = table;
+                maxLengthTable = length;
+            }
+        }
+
+        String result;
+        if (depth1Table != null){
+            result = depth1Table.getText();
+            if (webDriver != null) {
+                webDriver.quit();
+            }
+            return result;
+        }else{
+            if (webDriver != null) {
+                webDriver.quit();
+            }
+            return null;
+        }
+    }
+
     public String getURLContent(String url) throws InterruptedException {
         webDriver = WebDriverUtil.getChromeDriver();
         WebElement depth1Div=null;
@@ -46,11 +81,16 @@ public class CrawlingService {
                 divs = findElementSafely(webDriver, By.tagName("div"));
             }
 
-            if (divs.isEmpty()){    // div 태그를 찾지 못함
-                if (webDriver != null) {
-                    webDriver.quit();
+            if (divs.isEmpty()){    // div 태그를 찾지 못함 - table을 쓴 경우를 고려하여 td 탐색
+                String tableresult = getTableContent(webDriver);
+                if(tableresult==null) {
+                    if (webDriver != null) {
+                        webDriver.quit();
+                    }
+                    return null;
+                }else{
+                    return tableresult;
                 }
-                return null;
             }
 
             int maxLength1 = 0;
@@ -60,6 +100,26 @@ public class CrawlingService {
                 if (length > maxLength1) {
                     depth1Div = div;
                     maxLength1 = length;
+                }
+            }
+
+            if(maxLength1<=50){
+                String tableresult = getTableContent(webDriver);
+                if(tableresult==null) {
+                    if (webDriver != null) {
+                        webDriver.quit();
+                    }
+                    return null;
+                }else if(tableresult.length()>50){
+                    if (webDriver != null) {
+                        webDriver.quit();
+                    }
+                    return tableresult;
+                }else{
+                    if (webDriver != null) {
+                        webDriver.quit();
+                    }
+                    return null;
                 }
             }
 
