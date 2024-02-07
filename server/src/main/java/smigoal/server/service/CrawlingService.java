@@ -63,15 +63,10 @@ public class CrawlingService {
                 }
             }
 
-//             무한 스크롤 - depth1Div에 대해 스크롤 끝까지 내리기
-            int SCROLL_PAUSE_TIME = 1500;
-            System.out.println("!!!");
-            var stTime = new Date().getTime(); //현재시간
-            while (new Date().getTime() < stTime + 10000) { // 10초 동안 무한스크롤 지속
-                Thread.sleep(SCROLL_PAUSE_TIME); //리소스 초과 방지
-                //executeScript: 해당 페이지에 JavaScript 명령을 보내는 거
-                ((JavascriptExecutor)webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)", depth1Div);
-            }
+            // 스크롤 내리기 - depth1div 스크롤 내려서 더 많은 웹페이지내용 가져오게하기
+            int SCROLL_PAUSE_TIME = 1000;
+            ((JavascriptExecutor)webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)", depth1Div);
+            Thread.sleep(SCROLL_PAUSE_TIME);    // 로딩시간 1초
 
             List<WebElement> divs2; // 주요 내용을 찾기 위해 깊은 탐색
 
