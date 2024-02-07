@@ -31,17 +31,23 @@ public class MainController {
         }else if(request.url!=null){
             System.out.println("case 2---------------------------");
             String urlContent = crawlingService.getURLContent(request.url);
+            if (urlContent==null){
+                return "smimshing";
+            }
+
+            int length = urlContent.length();
             System.out.println(urlContent);
-            if (urlContent.length()>1000)
-                urlContent = urlContent.substring(0,1000);
+            System.out.println(length);
+            if (length>1000)
+                urlContent = urlContent.substring(length-1000,length);
             keyward = chatService.generateText(urlContent);  // 조절 필요
         }else{
             System.out.println("case 3---------------------------");
             keyward = chatService.generateText(request.message);
         }
 
-        if (keyward==null){ // 키워드 추출 실패
-            return "false";
+        if (keyward==null){ // 키워드 추출 실패 - 스미싱으로 간주
+            return "smishing";
         }
 
         // 키워드 추출 확인
