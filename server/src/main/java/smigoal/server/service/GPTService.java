@@ -85,6 +85,10 @@ public class GPTService {
                 result.add(st.nextToken().trim());
             }
 
+            if(!result.isEmpty()){  // 마지막 키워드는 짤릴 수 있으므로 제거
+                result.remove(result.size()-1);
+            }
+
             return result;
         } catch (RestClientException e) {
             e.printStackTrace();
