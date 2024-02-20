@@ -1,20 +1,16 @@
-package com.example.smigoal
+package com.example.smigoal.functions
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.example.smigoal.SMSServiceData.isServiceRunning
-import com.example.smigoal.SMSServiceData.stopSMSService
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodChannel
+import com.example.smigoal.R
+import com.example.smigoal.models.SMSServiceData.isServiceRunning
+import com.example.smigoal.models.SMSServiceData.stopSMSService
 
 class SMSForegroundService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -27,16 +23,14 @@ class SMSForegroundService : Service() {
         Log.i("test", "포그라운드 서비스")
         val notificationChannelId = "SmiGoal Notification Channel ID"
         // 안드로이드 Oreo 이상을 위한 알림 채널 생성
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelName = "SmiGoal Foreground Service"
-            val channel = NotificationChannel(
-                notificationChannelId,
-                channelName,
-                NotificationManager.IMPORTANCE_HIGH,
-            )
-            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(channel)
-        }
+        val channelName = "SmiGoal Foreground Service"
+        val channel = NotificationChannel(
+            notificationChannelId,
+            channelName,
+            NotificationManager.IMPORTANCE_HIGH,
+        )
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(channel)
 
         val notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
         val notification = notificationBuilder.setOngoing(true)
@@ -52,7 +46,6 @@ class SMSForegroundService : Service() {
         return null
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onDestroy() {
         super.onDestroy()
 //        stopForeground(STOP_FOREGROUND_REMOVE)

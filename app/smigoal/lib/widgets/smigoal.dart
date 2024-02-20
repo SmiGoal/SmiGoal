@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:smigoal/functions/sms_service.dart';
 import 'package:smigoal/widgets/settings.dart';
+
+import '../functions/result_handler.dart';
 
 class SmiGoal extends StatefulWidget {
   SmiGoal({super.key});
@@ -19,8 +20,8 @@ class _SmiGoalState extends State<SmiGoal> {
   @override
   void initState() {
     super.initState();
-    final smsService = SMSService(_getMessage);
-    smsService.initialize();
+    final resultHandler = ResultHandler(_getMessage);
+    resultHandler.init();
   }
 
   // Future<String> get message async {

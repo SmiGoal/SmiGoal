@@ -1,15 +1,12 @@
-package com.example.smigoal
+package com.example.smigoal.functions
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
 class BootCompletedReceiver : BroadcastReceiver() {
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context, intent: Intent) {
         Log.i("test", "핸드폰 부팅됐어요")
         if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
