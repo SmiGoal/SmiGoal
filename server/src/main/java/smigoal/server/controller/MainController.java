@@ -13,7 +13,9 @@ import smigoal.server.service.ModelService;
 import smigoal.server.service.URLCheckService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,16 +28,19 @@ public class MainController {
     private final URLCheckService urlCheckService;
 
     @PostMapping("")
-    public ResponseEntity<String> smishingCheck(@RequestBody QuestionDTO request) throws InterruptedException {
+    public ResponseEntity<Map<String, Object>> smishingCheck(@RequestBody QuestionDTO request) {
         List<String> keyward;
 
         if ((request.url==null || request.url.length == 0) && request.message==null){    // url, 문자 내용 둘 다 없는 경우
             log.info("error : url & message not available.");
 
-            String body = "Bad Request: url & message not available.";
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("status", "fail");
+            responseBody.put("message", "url & message not available.");
+
             return ResponseEntity
                     .badRequest()
-                    .body(body);
+                    .body(responseBody);
         }else if(request.url!=null && request.url.length != 0){    // url이 있는 경우
             log.info("case 1 : url exist");
 
@@ -44,35 +49,51 @@ public class MainController {
             for (String url : urls){
                 String urlContent = crawlingService.getURLContent(url);
                 if (urlContent==null){
-                    String body = "Detection Result: smishing";
+                    Map<String, Object> responseBody = new HashMap<>();
+                    responseBody.put("status", "success");
+                    responseBody.put("message", "Detection complete.");
+                    responseBody.put("result", "smishing");
+
                     return ResponseEntity
                             .ok()
-                            .body(body);
+                            .body(responseBody);
                 }
 
                 keyward = chatService.generateText(urlContent);
                 String detectResult = detectionFromKeywords(keyward);
 
                 if (detectResult.equals("smishing")){
-                    String body = "Detection Result: smishing";
+                    Map<String, Object> responseBody = new HashMap<>();
+                    responseBody.put("status", "success");
+                    responseBody.put("message", "Detection complete.");
+                    responseBody.put("result", "smishing");
+
                     return ResponseEntity
                             .ok()
-                            .body(body);
+                            .body(responseBody);
                 }
             }
-            String body = "Detection Result: ham";
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("status", "success");
+            responseBody.put("message", "Detection complete.");
+            responseBody.put("result", "ham");
+
             return ResponseEntity
                     .ok()
-                    .body(body);
+                    .body(responseBody);
         }else{  // 문자 내용만 있는 경우
             log.info("case 2 : url does not exist");
             keyward = chatService.generateText(request.message);
             String result = detectionFromKeywords(keyward);
 
-            String body = "Detection Result: ham";
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("status", "success");
+            responseBody.put("message", "Detection complete.");
+            responseBody.put("result", result);
             return ResponseEntity
                     .ok()
-                    .body(body);
+                    .body(responseBody);
         }
     }
 
