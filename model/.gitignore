@@ -170,4 +170,8 @@ cython_debug/
 # End of https://www.toptal.com/developers/gitignore/api/flask
 
 # 모델 파일
-.pt
+*.pt
+
+# docker
+Dockerfile
+.dockerignore
