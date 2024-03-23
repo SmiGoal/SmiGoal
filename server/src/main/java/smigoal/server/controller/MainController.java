@@ -45,9 +45,11 @@ public class MainController {
             log.info("case 1 : url exist");
 
             List<String> urls = urlCheckService.getWebpageURL(request.url);
+            List<String> urlContents = new ArrayList<>();
 
             for (String url : urls){
                 String urlContent = crawlingService.getURLContent(url);
+                urlContents.add(urlContent);
                 if (urlContent==null){
                     Map<String, Object> responseBody = new HashMap<>();
                     responseBody.put("status", "success");
@@ -63,21 +65,26 @@ public class MainController {
                 String detectResult = detectionFromKeywords(keyward);
 
                 if (detectResult.equals("smishing")){
+                    String summaryContent = chatService.summarizeText(urlContents.get(0));
+
                     Map<String, Object> responseBody = new HashMap<>();
                     responseBody.put("status", "success");
                     responseBody.put("message", "Detection complete.");
                     responseBody.put("result", "smishing");
+                    responseBody.put("summarize", summaryContent);
 
                     return ResponseEntity
                             .ok()
                             .body(responseBody);
                 }
             }
+            String summaryContent = chatService.summarizeText(urlContents.get(0));
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
             responseBody.put("message", "Detection complete.");
             responseBody.put("result", "ham");
+            responseBody.put("summarize", summaryContent);
 
             return ResponseEntity
                     .ok()

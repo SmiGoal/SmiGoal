@@ -19,6 +19,11 @@ public class CrawlingService {
 
     public String getURLContent(String url){
         String crawlingResult = crawling(url);
+
+        if (crawlingResult == null){
+            return null;
+        }
+
         int length = crawlingResult.length();
 
         // GPT에게 전달할 문자열 길이 조절
