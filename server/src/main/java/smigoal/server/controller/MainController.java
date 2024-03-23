@@ -3,6 +3,7 @@ package smigoal.server.controller;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,12 +26,16 @@ public class MainController {
     private final URLCheckService urlCheckService;
 
     @PostMapping("")
-    public String smishingCheck(@RequestBody QuestionDTO request) throws InterruptedException {
+    public ResponseEntity<String> smishingCheck(@RequestBody QuestionDTO request) throws InterruptedException {
         List<String> keyward;
 
         if ((request.url==null || request.url.length == 0) && request.message==null){    // url, 문자 내용 둘 다 없는 경우
             log.info("error : url & message not available.");
-            return "error";
+
+            String body = "Bad Request: url & message not available.";
+            return ResponseEntity
+                    .badRequest()
+                    .body(body);
         }else if(request.url!=null && request.url.length != 0){    // url이 있는 경우
             log.info("case 1 : url exist");
 
@@ -39,21 +44,35 @@ public class MainController {
             for (String url : urls){
                 String urlContent = crawlingService.getURLContent(url);
                 if (urlContent==null){
-                    return "smishing";
+                    String body = "Detection Result: smishing";
+                    return ResponseEntity
+                            .ok()
+                            .body(body);
                 }
 
                 keyward = chatService.generateText(urlContent);
                 String detectResult = detectionFromKeywords(keyward);
 
                 if (detectResult.equals("smishing")){
-                    return "smishing";
+                    String body = "Detection Result: smishing";
+                    return ResponseEntity
+                            .ok()
+                            .body(body);
                 }
             }
-            return "ham";
+            String body = "Detection Result: ham";
+            return ResponseEntity
+                    .ok()
+                    .body(body);
         }else{  // 문자 내용만 있는 경우
             log.info("case 2 : url does not exist");
             keyward = chatService.generateText(request.message);
-            return detectionFromKeywords(keyward);
+            String result = detectionFromKeywords(keyward);
+
+            String body = "Detection Result: ham";
+            return ResponseEntity
+                    .ok()
+                    .body(body);
         }
     }
 
