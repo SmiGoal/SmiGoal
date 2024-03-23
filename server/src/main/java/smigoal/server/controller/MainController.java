@@ -45,8 +45,6 @@ public class MainController {
                 int length = urlContent.length();
                 log.info("in case 1: urlContent={}", urlContent);
                 log.info("in case 1: length={}", length);
-                if (length>1000)
-                    urlContent = urlContent.substring(length-1000,length);
             }
 
 

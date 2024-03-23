@@ -8,8 +8,6 @@ import org.springframework.util.ObjectUtils;
 import smigoal.server.service.crawling.WebDriverUtil;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,6 +16,19 @@ import java.util.List;
 public class CrawlingService {
 
     private WebDriver webDriver;
+
+    public String getURLContent(String url){
+        String crawlingResult = crawling(url);
+        int length = crawlingResult.length();
+
+        // GPT에게 전달할 문자열 길이 조절
+        if(length > 1000){
+            crawlingResult = crawlingResult.substring(length-1000,length);
+        }else if(length >= 600){
+            crawlingResult = crawlingResult.substring(100);
+        }
+        return crawlingResult;
+    }
 
     private List<WebElement> findElementSafely(WebDriver driver, By by){
         for (int attempts = 0; attempts < 3; attempts++) {  // 3번의 기회
@@ -58,7 +69,7 @@ public class CrawlingService {
         }
     }
 
-    public String getURLContent(String url) {
+    public String crawling(String url) {
         try{
             webDriver = WebDriverUtil.getChromeDriver();
             WebElement depth1Div=null;
@@ -78,9 +89,6 @@ public class CrawlingService {
                 if (divs.isEmpty()){    // div 태그를 찾지 못함 - table을 쓴 경우를 고려하여 td 탐색
                     String tableresult = getTableContent(webDriver);
                     if(tableresult==null) {
-                        if (webDriver != null) {
-                            webDriver.quit();
-                        }
                         return null;
                     }else{
                         return tableresult;
@@ -100,19 +108,10 @@ public class CrawlingService {
                 if(maxLength1<=50){
                     String tableresult = getTableContent(webDriver);
                     if(tableresult==null) {
-                        if (webDriver != null) {
-                            webDriver.quit();
-                        }
                         return null;
                     }else if(tableresult.length()>50){
-                        if (webDriver != null) {
-                            webDriver.quit();
-                        }
                         return tableresult;
                     }else{
-                        if (webDriver != null) {
-                            webDriver.quit();
-                        }
                         return null;
                     }
                 }
@@ -174,10 +173,6 @@ public class CrawlingService {
                 return null;
             }
 
-            // 앞부분 자르기
-            if(result.length() >= 600){
-                result = result.substring(100);
-            }
             return result;
         }catch (Exception e){
             log.info("getURLContent() 에러 발생", e);
@@ -187,6 +182,6 @@ public class CrawlingService {
                 webDriver.quit();
             }
         }
-        
+
     }
 }
