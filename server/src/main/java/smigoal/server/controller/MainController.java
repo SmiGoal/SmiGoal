@@ -28,10 +28,10 @@ public class MainController {
     public String smishingCheck(@RequestBody QuestionDTO request) throws InterruptedException {
         List<String> keyward;
 
-        if (request.url==null && request.message==null){    // url, 문자 내용 둘 다 없는 경우
+        if ((request.url==null || request.url.length == 0) && request.message==null){    // url, 문자 내용 둘 다 없는 경우
             log.info("error : url & message not available.");
             return "error";
-        }else if(request.url!=null){    // url이 있는 경우
+        }else if(request.url!=null && request.url.length != 0){    // url이 있는 경우
             log.info("case 1 : url exist");
 
             List<String> urls = urlCheckService.getWebpageURL(request.url);
@@ -39,30 +39,37 @@ public class MainController {
             for (String url : urls){
                 String urlContent = crawlingService.getURLContent(url);
                 if (urlContent==null){
-                    return "smimshing";
+                    return "smishing";
                 }
 
-                int length = urlContent.length();
-                log.info("in case 1: urlContent={}", urlContent);
-                log.info("in case 1: length={}", length);
+//                int length = urlContent.length();
+//                log.info("in case 1: urlContent={}", urlContent);
+//                log.info("in case 1: length={}", length);
+
+                keyward = chatService.generateText(urlContent);
+                String detectResult = detectionFromKeywords(keyward);
+
+                if (detectResult.equals("smishing")){
+                    return "smishing";
+                }
             }
-
-
-//            keyward = chatService.generateText(urlContent);
-            keyward = chatService.generateText("임시");
+            return "ham";
         }else{  // 문자 내용만 있는 경우
             log.info("case 2 : url does not exist");
             keyward = chatService.generateText(request.message);
+            return detectionFromKeywords(keyward);
         }
+    }
 
-        if (keyward==null){ // 키워드 추출 실패 - 스미싱으로 간주
+    private String detectionFromKeywords(List<String> keyward) {
+        if (keyward ==null){ // 키워드 추출 실패 - 스미싱으로 간주
             log.info("error : keyward does not exist.");
             return "smishing";
         }
 
         // 키워드 추출 확인
         log.info("checking keyword");
-        for (int i=0;i<keyward.size();i++){
+        for (int i = 0; i< keyward.size(); i++){
             log.info("keyward {} = {}", i, keyward.get(i));
         }
 
