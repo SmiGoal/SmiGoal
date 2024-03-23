@@ -42,10 +42,6 @@ public class MainController {
                     return "smishing";
                 }
 
-//                int length = urlContent.length();
-//                log.info("in case 1: urlContent={}", urlContent);
-//                log.info("in case 1: length={}", length);
-
                 keyward = chatService.generateText(urlContent);
                 String detectResult = detectionFromKeywords(keyward);
 
@@ -62,7 +58,7 @@ public class MainController {
     }
 
     private String detectionFromKeywords(List<String> keyward) {
-        if (keyward ==null){ // 키워드 추출 실패 - 스미싱으로 간주
+        if (keyward.size() <= 1){ // 키워드 추출 실패 - 스미싱으로 간주
             log.info("error : keyward does not exist.");
             return "smishing";
         }
@@ -74,10 +70,7 @@ public class MainController {
         }
 
         // 모델 통신
-        String filterResult = modelService.callFlaskService(keyward);
-
-
-        return filterResult;
+        return modelService.callFlaskService(keyward);
     }
 
     @Getter

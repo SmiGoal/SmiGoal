@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -79,11 +80,12 @@ public class GPTService {
             StringTokenizer st = new StringTokenizer(content, ",");
 
             List<String> result = new ArrayList<>();
+            result.add(getNowSeason());
             while (st.hasMoreTokens()){
                 result.add(st.nextToken().trim());
             }
 
-            if(!result.isEmpty()){  // 마지막 키워드는 짤릴 수 있으므로 제거
+            if(result.size()>1){  // 마지막 키워드는 짤릴 수 있으므로 제거
                 result.remove(result.size()-1);
             }
 
@@ -93,6 +95,20 @@ public class GPTService {
 
 //            return "Error: " + e.getMessage();
             return null;
+        }
+    }
+
+    private String getNowSeason(){
+        LocalDate now = LocalDate.now();
+        int month = now.getMonthValue();
+        if (month >= 3 && month <= 5) {
+            return "spring";
+        } else if (month >= 6 && month <= 8) {
+            return "summer";
+        } else if (month >= 9 && month <= 11) {
+            return "fall";
+        } else {
+            return "winter";
         }
     }
 
