@@ -27,32 +27,35 @@ public class MainController {
         List<String> keyward;
 
         if (request.url==null && request.message==null){
+            log.info("error : url & message not available.");
             return "error";
         }else if(request.url!=null){
-            System.out.println("case 2---------------------------");
+            log.info("case 1 : url does not exist");
             String urlContent = crawlingService.getURLContent(request.url);
             if (urlContent==null){
                 return "smimshing";
             }
 
             int length = urlContent.length();
-            System.out.println(urlContent);
-            System.out.println(length);
+            log.info("in case 1: urlContent={}", urlContent);
+            log.info("in case 1: length={}", length);
             if (length>1000)
                 urlContent = urlContent.substring(length-1000,length);
-            keyward = chatService.generateText(urlContent);  // 조절 필요
+            keyward = chatService.generateText(urlContent);
         }else{
-            System.out.println("case 3---------------------------");
+            log.info("case 2 : url exist");
             keyward = chatService.generateText(request.message);
         }
 
         if (keyward==null){ // 키워드 추출 실패 - 스미싱으로 간주
+            log.info("error : keyward does not exist.");
             return "smishing";
         }
 
         // 키워드 추출 확인
+        log.info("checking keyword");
         for (int i=0;i<keyward.size();i++){
-            System.out.println(keyward.get(i));
+            log.info("keyward {} = {}", i, keyward.get(i));
         }
 
         // 모델 통신

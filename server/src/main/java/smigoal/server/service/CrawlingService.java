@@ -1,6 +1,7 @@
 package smigoal.server.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CrawlingService {
 
@@ -130,15 +132,15 @@ public class CrawlingService {
 
             List<WebElement> divs2; // 주요 내용을 찾기 위해 깊은 탐색
 
-            System.out.println("----------------------------------div2 탐색");
+            log.info("crawling : explore div2");
             divs2 = depth1Div.findElements(By.xpath("./div"));
 
-            System.out.println(divs2);
+            log.info("crawling : divs2 = {}", divs2);
             if (!divs2.isEmpty()){
                 int maxLength2 = 0;
 
                 for (WebElement div : divs2) {
-                    System.out.println(div);
+                    log.info("divs2 : div = {}", div);
                     int length=0;
                     length = div.getText().length();
                     if (length > maxLength2) {
@@ -150,8 +152,6 @@ public class CrawlingService {
                 int depth = 5;  // 너무 깊이 탐색하면 동적인 웹사이트의 요소가 변해버려서 오류 발생할 수 있음
 
                 for (int i=1;i<depth;i++){
-                    System.out.println("!!!@@#@#@!@#!@");
-                    System.out.println(maxLength2);
                     maxLength1=maxLength2;
                     maxLength2=0;
                     divs2 = depth2Div.findElements(By.xpath("./div"));

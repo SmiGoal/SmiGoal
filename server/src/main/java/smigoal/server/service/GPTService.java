@@ -3,6 +3,7 @@ package smigoal.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class GPTService {
     private final ChatgptService chatgptService;
@@ -70,7 +72,7 @@ public class GPTService {
             List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
             String content = (String) ((Map<String, Object>) choices.get(0).get("message")).get("content");
 
-            System.out.println(content);
+            log.info("gpt : content = {}", content);
             // content 예시
             // {예산안, 국회, 윤석열, 대통령, 민생, 한덕수, 국무총리, 거시지표, 국정원장, 조태용, 한동훈, 법무부, 개각, 연합뉴스TV, 조한대}
             // max_tokens 값 설정 시 짤릴 수 있음
