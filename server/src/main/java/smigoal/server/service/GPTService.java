@@ -21,10 +21,6 @@ import java.util.*;
 public class GPTService {
     private final ChatgptService chatgptService;
 
-    public String getChatResponse(String prompt){
-        return chatgptService.sendMessage(prompt);
-    }
-
     @Value("${chatgpt.api-key}")
     private String API_KEY;
     private static final String ENDPOINT = "https://api.openai.com/v1/chat/completions";
