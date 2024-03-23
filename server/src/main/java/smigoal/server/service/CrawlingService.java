@@ -38,9 +38,6 @@ public class CrawlingService {
         int maxLengthTable = 0;
 
         if (tables.isEmpty()){
-            if (webDriver != null) {
-                webDriver.quit();
-            }
             return null;
         }
 
@@ -55,146 +52,141 @@ public class CrawlingService {
         String result;
         if (depth1Table != null){
             result = depth1Table.getText();
-            if (webDriver != null) {
-                webDriver.quit();
-            }
             return result;
         }else{
-            if (webDriver != null) {
-                webDriver.quit();
-            }
             return null;
         }
     }
 
-    public String getURLContent(String url) throws InterruptedException {
-        webDriver = WebDriverUtil.getChromeDriver();
-        WebElement depth1Div=null;
-        WebElement depth2Div=null;
+    public String getURLContent(String url) {
+        try{
+            webDriver = WebDriverUtil.getChromeDriver();
+            WebElement depth1Div=null;
+            WebElement depth2Div=null;
 
-        if (!ObjectUtils.isEmpty(webDriver)){
-            webDriver.get(url);
-            webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+            if (!ObjectUtils.isEmpty(webDriver)){
+                webDriver.get(url);
+                webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 
-            List<WebElement> divs = findElementSafely(webDriver, By.cssSelector("body > div"));
-            // div가 가장 범용적인것 같지만 div를 사용하지 않는 웹사이트의 경우 문제가 생길 수 있음
+                List<WebElement> divs = findElementSafely(webDriver, By.cssSelector("body > div"));
+                // div가 가장 범용적인것 같지만 div를 사용하지 않는 웹사이트의 경우 문제가 생길 수 있음
 
-            if (divs.isEmpty()) {    // 최상위에 div가 없을 때
-                divs = findElementSafely(webDriver, By.tagName("div"));
-            }
-
-            if (divs.isEmpty()){    // div 태그를 찾지 못함 - table을 쓴 경우를 고려하여 td 탐색
-                String tableresult = getTableContent(webDriver);
-                if(tableresult==null) {
-                    if (webDriver != null) {
-                        webDriver.quit();
-                    }
-                    return null;
-                }else{
-                    return tableresult;
+                if (divs.isEmpty()) {    // 최상위에 div가 없을 때
+                    divs = findElementSafely(webDriver, By.tagName("div"));
                 }
-            }
 
-            int maxLength1 = 0;
-
-            for (WebElement div : divs) {
-                int length = div.getText().length();
-                if (length > maxLength1) {
-                    depth1Div = div;
-                    maxLength1 = length;
-                }
-            }
-
-            if(maxLength1<=50){
-                String tableresult = getTableContent(webDriver);
-                if(tableresult==null) {
-                    if (webDriver != null) {
-                        webDriver.quit();
-                    }
-                    return null;
-                }else if(tableresult.length()>50){
-                    if (webDriver != null) {
-                        webDriver.quit();
-                    }
-                    return tableresult;
-                }else{
-                    if (webDriver != null) {
-                        webDriver.quit();
-                    }
-                    return null;
-                }
-            }
-
-            // 스크롤 내리기 - depth1div 스크롤 내려서 더 많은 웹페이지내용 가져오게하기
-            int SCROLL_PAUSE_TIME = 1000;
-            ((JavascriptExecutor)webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)", depth1Div);
-            Thread.sleep(SCROLL_PAUSE_TIME);    // 로딩시간 1초
-
-            List<WebElement> divs2; // 주요 내용을 찾기 위해 깊은 탐색
-
-            log.info("crawling : explore div2");
-            divs2 = depth1Div.findElements(By.xpath("./div"));
-
-            log.info("crawling : divs2 = {}", divs2);
-            if (!divs2.isEmpty()){
-                int maxLength2 = 0;
-
-                for (WebElement div : divs2) {
-                    log.info("divs2 : div = {}", div);
-                    int length=0;
-                    length = div.getText().length();
-                    if (length > maxLength2) {
-                        depth2Div = div;
-                        maxLength2 = length;
+                if (divs.isEmpty()){    // div 태그를 찾지 못함 - table을 쓴 경우를 고려하여 td 탐색
+                    String tableresult = getTableContent(webDriver);
+                    if(tableresult==null) {
+                        if (webDriver != null) {
+                            webDriver.quit();
+                        }
+                        return null;
+                    }else{
+                        return tableresult;
                     }
                 }
 
-                int depth = 5;  // 너무 깊이 탐색하면 동적인 웹사이트의 요소가 변해버려서 오류 발생할 수 있음
+                int maxLength1 = 0;
 
-                for (int i=1;i<depth;i++){
-                    maxLength1=maxLength2;
-                    maxLength2=0;
-                    divs2 = depth2Div.findElements(By.xpath("./div"));
-                    if (divs2.isEmpty())
-                        break;
+                for (WebElement div : divs) {
+                    int length = div.getText().length();
+                    if (length > maxLength1) {
+                        depth1Div = div;
+                        maxLength1 = length;
+                    }
+                }
+
+                if(maxLength1<=50){
+                    String tableresult = getTableContent(webDriver);
+                    if(tableresult==null) {
+                        if (webDriver != null) {
+                            webDriver.quit();
+                        }
+                        return null;
+                    }else if(tableresult.length()>50){
+                        if (webDriver != null) {
+                            webDriver.quit();
+                        }
+                        return tableresult;
+                    }else{
+                        if (webDriver != null) {
+                            webDriver.quit();
+                        }
+                        return null;
+                    }
+                }
+
+                // 스크롤 내리기 - depth1div 스크롤 내려서 더 많은 웹페이지내용 가져오게하기
+                int SCROLL_PAUSE_TIME = 1000;
+                ((JavascriptExecutor)webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)", depth1Div);
+                Thread.sleep(SCROLL_PAUSE_TIME);    // 로딩시간 1초
+
+                List<WebElement> divs2; // 주요 내용을 찾기 위해 깊은 탐색
+
+                log.info("crawling : explore div2");
+                divs2 = depth1Div.findElements(By.xpath("./div"));
+
+                log.info("crawling : divs2 = {}", divs2);
+                if (!divs2.isEmpty()){
+                    int maxLength2 = 0;
 
                     for (WebElement div : divs2) {
-                        int length = div.getText().length();
+                        log.info("divs2 : div = {}", div);
+                        int length=0;
+                        length = div.getText().length();
                         if (length > maxLength2) {
                             depth2Div = div;
                             maxLength2 = length;
                         }
                     }
 
-                    if (maxLength2<=maxLength1*0.95 || maxLength2 < 1000)
-                        break;
+                    int depth = 5;  // 너무 깊이 탐색하면 동적인 웹사이트의 요소가 변해버려서 오류 발생할 수 있음
+
+                    for (int i=1;i<depth;i++){
+                        maxLength1=maxLength2;
+                        maxLength2=0;
+                        divs2 = depth2Div.findElements(By.xpath("./div"));
+                        if (divs2.isEmpty())
+                            break;
+
+                        for (WebElement div : divs2) {
+                            int length = div.getText().length();
+                            if (length > maxLength2) {
+                                depth2Div = div;
+                                maxLength2 = length;
+                            }
+                        }
+
+                        if (maxLength2<=maxLength1*0.95 || maxLength2 < 1000)
+                            break;
+                    }
                 }
+
             }
 
-        }
+            String result;
+            if (depth2Div != null) {
+                result = depth2Div.getText();
+            } else if (depth1Div != null){
+                result = depth1Div.getText();
+            }else{
+                return null;
+            }
 
-        String result;
-        if (depth2Div != null) {
-            result = depth2Div.getText();
-            if (webDriver != null) {
-                webDriver.quit();
+            // 앞부분 자르기
+            if(result.length() >= 600){
+                result = result.substring(100);
             }
-        } else if (depth1Div != null){
-            result = depth1Div.getText();
-            if (webDriver != null) {
-                webDriver.quit();
-            }
-        }else{
-            if (webDriver != null) {
-                webDriver.quit();
-            }
+            return result;
+        }catch (Exception e){
+            log.info("getURLContent() 에러 발생", e);
             return null;
+        }finally {
+            if (webDriver != null) {
+                webDriver.quit();
+            }
         }
-
-        // 앞부분 자르기
-        if(result.length() >= 600){
-            result = result.substring(100);
-        }
-        return result;
+        
     }
 }

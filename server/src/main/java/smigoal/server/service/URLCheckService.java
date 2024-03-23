@@ -73,7 +73,7 @@ public class URLCheckService {
                 return false;
             }
         }catch (Exception e){
-            log.info("error in checkURL() : {}", e);
+            log.info("checkURL() 에러발생", e);
             return false;
         }
     }
