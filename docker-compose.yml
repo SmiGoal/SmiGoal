@@ -16,5 +16,9 @@ services:
       dockerfile: Dockerfile
       context: ./server
     image: ajroot/smigoal-server
+    volumes:
+      - /home/ubuntu/chromedriver-linux64:/chrome
+      - /usr/bin/google-chrome-stable:/usr/bin/google-chrome-stable
+      - /opt/google/chrome/google-chrome:/opt/google/chrome/google-chrome
     ports:
       - "8080:8080"
