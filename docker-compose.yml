@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  smigoal-model:
+    container_name: smigoal-model
+    build:
+      dockerfile: Dockerfile
+      context: ./model
+    image: ajroot/smigoal-model
+    ports:
+      - "5000:5000"
+  smigoal-server:
+    container_name: smigoal-server
+    build:
+      dockerfile: Dockerfile
+      context: ./server
+    image: ajroot/smigoal-server
+    ports:
+      - "8080:8080"

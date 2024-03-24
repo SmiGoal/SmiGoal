@@ -38,7 +38,3 @@ out/
 
 ### yml 파일 ###
 application.yml
-
-### docker ###
-Dockerfile
-docker-compose.yml

@@ -171,7 +171,3 @@ cython_debug/
 
 # 모델 파일
 *.pt
-
-# docker
-Dockerfile
-.dockerignore
