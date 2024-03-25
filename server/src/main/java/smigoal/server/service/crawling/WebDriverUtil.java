@@ -29,7 +29,7 @@ public class WebDriverUtil {
         chromeOptions.setCapability("ignoreProtectedModeSettings", true);
 
         // 배포 환경용 코드
-        chromeOptions.setBinary("/opt/chrome/chrome-linux64");
+        chromeOptions.setBinary("/opt/chrome/chrome-linux64/chrome");
 
         WebDriver driver = new ChromeDriver(chromeOptions);
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
