@@ -6,8 +6,6 @@ services:
       dockerfile: Dockerfile
       context: ./model
     image: ajroot/smigoal-model
-    volumes:
-      - /home/ubuntu/SmiGoal/model/src/model_100000_data.pt:/model/model_100000_data.pt
     ports:
       - "5000:5000"
   smigoal-server:
@@ -17,4 +15,4 @@ services:
       context: ./server
     image: ajroot/smigoal-server
     ports:
-      - "8080:8080"
+      - "8082:8080"
