@@ -47,19 +47,30 @@ public class MainController {
             List<String> urls = urlCheckService.getWebpageURL(request.url);
             List<String> urlContents = new ArrayList<>();
 
+            if (urls.isEmpty()){
+                Map<String, Object> responseBody = new HashMap<>();
+                responseBody.put("status", "fail");
+                responseBody.put("message", "all url is not available.");
+
+                return ResponseEntity
+                        .ok()
+                        .body(responseBody);
+            }
+
             for (String url : urls){
                 String urlContent = crawlingService.getURLContent(url);
-                urlContents.add(urlContent);
-                if (urlContent==null){
+
+                if (urlContent == null){
                     Map<String, Object> responseBody = new HashMap<>();
-                    responseBody.put("status", "success");
-                    responseBody.put("message", "Detection complete.");
-                    responseBody.put("result", "smishing");
+                    responseBody.put("status", "fail");
+                    responseBody.put("message", "url detected with no content.");
 
                     return ResponseEntity
                             .ok()
                             .body(responseBody);
                 }
+
+                urlContents.add(urlContent);
 
                 keyward = chatService.generateText(urlContent);
                 String detectResult = detectionFromKeywords(keyward);
