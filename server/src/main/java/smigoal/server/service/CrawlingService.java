@@ -1,14 +1,21 @@
 package smigoal.server.service;
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import smigoal.server.service.crawling.WebDriverUtil;
 
+import java.io.File;
+import java.net.URL;
 import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -16,6 +23,43 @@ import java.util.List;
 public class CrawlingService {
 
     private WebDriver webDriver;
+
+    private final AmazonS3Client amazonS3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    public String screenShot(String url){
+        try{
+            webDriver = WebDriverUtil.getChromeDriver();
+
+            if (!ObjectUtils.isEmpty(webDriver)) {
+                webDriver.get(url);
+                webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+
+                File scrFile = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
+
+                String transUrl = url.replace("http://", "").replace("https://", "");
+                String fileKey = "screenshot/"+transUrl+UUID.randomUUID().toString().substring(0, 8)+".png";
+
+                amazonS3Client.putObject(bucket, fileKey, scrFile);
+
+                GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket, fileKey)
+                        .withMethod(HttpMethod.GET);
+
+                URL imageUrl = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
+
+                return imageUrl.toString();
+            }
+            return null;
+        }catch (Exception e){
+            log.info("getURLContent() 에러 발생", e);
+            return null;
+        }finally {
+            if (webDriver != null) {
+                webDriver.quit();
+            }
+        }
+    }
 
     public String getURLContent(String url){
         String crawlingResult = crawling(url);
