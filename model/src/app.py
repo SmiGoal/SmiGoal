@@ -14,12 +14,27 @@ app = Flask(__name__)
 @app.route('/test', methods=['POST'])
 def predict():
     data = request.json
-    result = test_model(model_path, data)
-    return jsonify(result)
+    detection_result = test_model(model_path, data)
+
+    result_dict = {
+        "input_text": detection_result.input_text,
+        "ham_percentage": detection_result.ham_percentage,
+        "spam_percentage": detection_result.spam_percentage,
+        "result": detection_result.result,
+    }
+
+    return jsonify(result_dict)
 
 # model = torch.load(model_path, map_location=torch.device('cpu'))
 # 모델 수정사항 map_location=torch.device('cpu')를 추가하여 로컬에서 동작하도록 수정
 # 분류 결과값 반환하도록 설정
+
+class AnalysisResult:
+    def __init__(self, input_text, ham_percentage, spam_percentage, result):
+        self.input_text = input_text
+        self.ham_percentage = ham_percentage
+        self.spam_percentage = spam_percentage
+        self.result = result
 
 class BertTextClassifier(nn.Module):
     def __init__(self, num_labels=2):
@@ -72,9 +87,12 @@ def test_model(model_path, keyword_list):
     print(f"모델 예측 확률 (ham, smishing): {ham_prob_percentage:.2f}% , {smishing_prob_percentage:.2f}%")
     print(f"모델 예측 결과: {result}")
     
-    return result
+    result_object = AnalysisResult(input_text, ham_prob_percentage, smishing_prob_percentage, result)
+
+    return result_object
 
 model_path = "/app/src/model_100000_data.pt"
+# model_path = "./model_100000_data.pt"
 general_keywords = ["사람", "시간", "일", "때", "그냥", "말", "것", "생각", "일어나다", "일어나다", "이렇게",
                     "저렇게", "그렇게", "곳", "많다", "적다", "어떻다", "모르다", "알다", "하다", "되다",
                     "가다", "오다", "있다", "없다", "보다", "듣다", "많이", "조금", "자주", "가끔", "어제",
