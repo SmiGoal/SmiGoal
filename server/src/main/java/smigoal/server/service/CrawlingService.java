@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -36,7 +37,9 @@ public class CrawlingService {
                 log.info("screenshot url = {}", url);
                 webDriver.manage().window().setSize(new Dimension(1920, 1080));
                 webDriver.get(url);
-                webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+                
+                // 스크린샷 글씨 깨짐 방지
+                Thread.sleep(3000);
 
                 File scrFile = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
 
