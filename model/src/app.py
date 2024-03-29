@@ -91,8 +91,8 @@ def test_model(model_path, keyword_list):
 
     return result_object
 
-model_path = "/app/src/model_100000_data.pt"
-# model_path = "./model_100000_data.pt"
+# model_path = "/app/src/model_100000_data.pt"
+model_path = "./model_100000_data.pt"
 general_keywords = ["사람", "시간", "일", "때", "그냥", "말", "것", "생각", "일어나다", "일어나다", "이렇게",
                     "저렇게", "그렇게", "곳", "많다", "적다", "어떻다", "모르다", "알다", "하다", "되다",
                     "가다", "오다", "있다", "없다", "보다", "듣다", "많이", "조금", "자주", "가끔", "어제",

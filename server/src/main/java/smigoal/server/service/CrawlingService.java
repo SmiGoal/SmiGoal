@@ -33,6 +33,8 @@ public class CrawlingService {
             webDriver = WebDriverUtil.getChromeDriver();
 
             if (!ObjectUtils.isEmpty(webDriver)) {
+                log.info("screenshot url = {}", url);
+                webDriver.manage().window().setSize(new Dimension(1920, 1080));
                 webDriver.get(url);
                 webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 

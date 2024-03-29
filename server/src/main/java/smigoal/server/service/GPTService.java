@@ -92,7 +92,7 @@ public class GPTService {
         // 비용문제로 최종단계에서만 gpt4 사용
         requestBody.put("model", "gpt-3.5-turbo-1106");
         requestBody.put("temperature", 0.1);
-        requestBody.put("max_tokens", 300);
+        requestBody.put("max_tokens", 400);
         requestBody.put("top_p", 1);
         requestBody.put("frequency_penalty", 0.5);
         requestBody.put("presence_penalty", 0.0);

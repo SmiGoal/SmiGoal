@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import smigoal.server.dto.ModelResponseDto;
 import smigoal.server.service.CrawlingService;
 import smigoal.server.service.GPTService;
 import smigoal.server.service.ModelService;
@@ -74,9 +75,9 @@ public class MainController {
                 urlContents.add(urlContent);
 
                 keyward = chatService.generateText(urlContent);
-                String detectResult = detectionFromKeywords(keyward);
+                ModelResponseDto detectResult = detectionFromKeywords(keyward);
 
-                if (detectResult.equals("smishing")){   // 스미싱 검출된 경우 검출된 url에 대한 요약본과 썸네일 제공
+                if (detectResult.getResult().equals("smishing")){   // 스미싱 검출된 경우 검출된 url에 대한 요약본과 썸네일 제공
                     log.info("smishing URL detected.");
 
                     String summaryContent = chatService.summarizeText(urlContent);
@@ -85,7 +86,7 @@ public class MainController {
                     Map<String, Object> responseBody = new HashMap<>();
                     responseBody.put("status", "success");
                     responseBody.put("message", "Detection complete.");
-                    responseBody.put("result", "smishing");
+                    responseBody.put("result", detectResult);
                     responseBody.put("summarize", summaryContent);
                     responseBody.put("thumbnail", fileUrl);
 
@@ -100,7 +101,7 @@ public class MainController {
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
             responseBody.put("message", "Detection complete.");
-            responseBody.put("result", "ham");
+            responseBody.put("result", new ModelResponseDto("ham"));
             responseBody.put("summarize", summaryContent);
             responseBody.put("thumbnail", fileUrl);
 
@@ -110,7 +111,7 @@ public class MainController {
         }else{  // 문자 내용만 있는 경우
             log.info("case 2 : url does not exist");
             keyward = chatService.generateText(request.message);
-            String result = detectionFromKeywords(keyward);
+            ModelResponseDto result = detectionFromKeywords(keyward);
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
@@ -122,10 +123,10 @@ public class MainController {
         }
     }
 
-    private String detectionFromKeywords(List<String> keyward) {
+    private ModelResponseDto detectionFromKeywords(List<String> keyward) {
         if (keyward.size() <= 1){ // 키워드 추출 실패 - 스미싱으로 간주
             log.info("error : keyward does not exist.");
-            return "smishing";
+            return new ModelResponseDto("smishing");
         }
 
         // 키워드 추출 확인
