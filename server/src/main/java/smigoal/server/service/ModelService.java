@@ -16,8 +16,8 @@ public class ModelService {
     // 1번째 방식(2번째로 해도 되는데 그냥 이왕 쓰는거 이렇게 써봄)
     public ModelService(WebClient.Builder builder) {
         this.webClient = builder
-//                .baseUrl("http://smigoal-model:5000")
-                .baseUrl("http://localhost:5000")
+                .baseUrl("http://smigoal-model:5000")
+//                .baseUrl("http://localhost:5000")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
