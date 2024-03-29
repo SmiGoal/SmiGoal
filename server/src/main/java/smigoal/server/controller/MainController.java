@@ -47,7 +47,7 @@ public class MainController {
             List<String> urls = urlCheckService.getWebpageURL(request.url);
             List<String> urlContents = new ArrayList<>();
 
-            if (urls.isEmpty()){
+            if (urls.isEmpty()){    // 모든 url 검사결과 웹페이지 url이 없는 경우
                 Map<String, Object> responseBody = new HashMap<>();
                 responseBody.put("status", "fail");
                 responseBody.put("message", "all url is not available.");
@@ -57,8 +57,9 @@ public class MainController {
                         .body(responseBody);
             }
 
-            for (String url : urls){
-                String urlContent = crawlingService.getURLContent(url);
+            for (int i=0;i<urls.size();i++){
+                String checkingUrl = urls.get(0);
+                String urlContent = crawlingService.getURLContent(checkingUrl);
 
                 if (urlContent == null){
                     Map<String, Object> responseBody = new HashMap<>();
@@ -75,14 +76,18 @@ public class MainController {
                 keyward = chatService.generateText(urlContent);
                 String detectResult = detectionFromKeywords(keyward);
 
-                if (detectResult.equals("smishing")){
-                    String summaryContent = chatService.summarizeText(urlContents.get(0));
+                if (detectResult.equals("smishing")){   // 스미싱 검출된 경우 검출된 url에 대한 요약본과 썸네일 제공
+                    log.info("smishing URL detected.");
+
+                    String summaryContent = chatService.summarizeText(urlContent);
+                    String fileUrl = crawlingService.screenShot(checkingUrl);
 
                     Map<String, Object> responseBody = new HashMap<>();
                     responseBody.put("status", "success");
                     responseBody.put("message", "Detection complete.");
                     responseBody.put("result", "smishing");
                     responseBody.put("summarize", summaryContent);
+                    responseBody.put("thumbnail", fileUrl);
 
                     return ResponseEntity
                             .ok()
@@ -90,12 +95,14 @@ public class MainController {
                 }
             }
             String summaryContent = chatService.summarizeText(urlContents.get(0));
+            String fileUrl = crawlingService.screenShot(urlContents.get(0));
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
             responseBody.put("message", "Detection complete.");
             responseBody.put("result", "ham");
             responseBody.put("summarize", summaryContent);
+            responseBody.put("thumbnail", fileUrl);
 
             return ResponseEntity
                     .ok()
