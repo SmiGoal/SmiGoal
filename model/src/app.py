@@ -80,8 +80,8 @@ def test_model(model_path, keyword_list):
 
     return result_object
 
-model_path = "/app/src/AlbertForSequenceClassification.pt"
-# model_path = "./AlbertForSequenceClassification.pt"
+# model_path = "/app/src/AlbertForSequenceClassification.pt"
+model_path = "./AlbertForSequenceClassification.pt"
 
 if __name__ == '__main__':
     app.run(debug=True)

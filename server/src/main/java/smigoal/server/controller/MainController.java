@@ -58,6 +58,8 @@ public class MainController {
                         .body(responseBody);
             }
 
+            ModelResponseDto firstResult = new ModelResponseDto("ham");
+
             for (int i=0;i<urls.size();i++){
                 String checkingUrl = urls.get(0);
                 String urlContent = crawlingService.getURLContent(checkingUrl);
@@ -76,6 +78,10 @@ public class MainController {
 
                 keyward = chatService.generateText(urlContent);
                 ModelResponseDto detectResult = detectionFromKeywords(keyward);
+
+                if (i == 0) {
+                    firstResult = detectResult;
+                }
 
                 if (detectResult.getResult().equals("smishing")){   // 스미싱 검출된 경우 검출된 url에 대한 요약본과 썸네일 제공
                     log.info("smishing URL detected.");
@@ -96,12 +102,12 @@ public class MainController {
                 }
             }
             String summaryContent = chatService.summarizeText(urlContents.get(0));
-            String fileUrl = crawlingService.screenShot(urlContents.get(0));
+            String fileUrl = crawlingService.screenShot(urls.get(0));
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
             responseBody.put("message", "Detection complete.");
-            responseBody.put("result", new ModelResponseDto("ham"));
+            responseBody.put("result", firstResult);
             responseBody.put("summarize", summaryContent);
             responseBody.put("thumbnail", fileUrl);
 
