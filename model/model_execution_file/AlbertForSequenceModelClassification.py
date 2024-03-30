@@ -1,32 +1,7 @@
-from flask import Flask, request, jsonify
-
 import torch
 import torch.nn as nn
 import numpy as np
 from transformers import AlbertForSequenceClassification, AlbertTokenizer
-
-app = Flask(__name__)
-
-@app.route('/test', methods=['POST'])
-def predict():
-    data = request.json
-    detection_result = test_model(model_path, data)
-
-    result_dict = {
-        "input_text": detection_result.input_text,
-        "ham_percentage": detection_result.ham_percentage,
-        "spam_percentage": detection_result.spam_percentage,
-        "result": detection_result.result,
-    }
-
-    return jsonify(result_dict)
-
-class AnalysisResult:
-    def __init__(self, input_text, ham_percentage, spam_percentage, result):
-        self.input_text = input_text
-        self.ham_percentage = ham_percentage
-        self.spam_percentage = spam_percentage
-        self.result = result
 
 class ALBertTextClassifier(nn.Module):
     def __init__(self, num_labels=2):
@@ -80,8 +55,32 @@ def test_model(model_path, keyword_list):
 
     return result_object
 
-model_path = "/app/src/AlbertForSequenceClassification.pt"
-# model_path = "./AlbertForSequenceClassification.pt"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    model_path = "C:/Users/L/.spyder-py3/project/output/AlbertForSequenceClassification.pt"
+    
+    general_keywords = ["사람", "시간", "일", "때", "그냥", "말", "것", "생각", "일어나다", "일어나다", "이렇게",
+                    "저렇게", "그렇게", "곳", "많다", "적다", "어떻다", "모르다", "알다", "하다", "되다",
+                    "가다", "오다", "있다", "없다", "보다", "듣다", "많이", "조금", "자주", "가끔", "어제",
+                    "오늘", "내일", "이번주", "다음주"]
+    keyword_list = ["spring", "비상", "긴급", "즉시", "신속", "급한", "즉각",
+                     "당첨", "추첨", "상금", "무료", "특별 이벤트",
+                     "해킹", "보안", "계정", "비밀번호", "변경",
+                     "확인", "인증", "업데이트", "갱신", "확인 필요",
+                     "공지", "공식", "긴급 조치", "중요", "고객센터",
+                     "혜택", "특가", "할인", "이벤트", "무료 증정",
+                     "마감", "기한", "오늘까지", "한정", "마지막 기회",
+                     "당신의", "회원", "고객", "고객님", "님"]
+    finance_smishing_keywords = ["투자", "환급", "보험", "자동이체", "소액결제", "거래", "무료", "특별", "당첨",
+                             "무료체험", "무료제공", "이벤트", "당첨", "상품권", "미포함", "청구", "승인", "신용",
+                                 "사람", "시간", "일", "때", "그냥", "말", "것", "생각", "일어나다", "일어나다", "이렇게",
+                    "저렇게", "그렇게", "곳", "많다", "적다", "어떻다", "모르다", "알다", "하다", "되다",
+                    "가다", "오다", "있다", "없다", "보다", "듣다", "많이", "조금", "자주", "가끔", "어제",
+                    "오늘", "내일", "이번주", "다음주"]
+
+    general_word_list = ["안녕", "반가워", "프로그래밍", "데이터", "인공지능"]
+
+    test_model(model_path, keyword_list)
+    test_model(model_path, general_word_list)
+    test_model(model_path, finance_smishing_keywords)
+    test_model(model_path, general_word_list)
