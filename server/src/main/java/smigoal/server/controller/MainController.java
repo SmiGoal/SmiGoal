@@ -33,10 +33,11 @@ public class MainController {
         List<String> keyword;
 
         if (request.url==null || request.url.length == 0){
-            log.info("error : url & message not available.");
+            log.info("error : url not available.");
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "fail");
+            responseBody.put("code", 420);
             responseBody.put("message", "url not available.");
 
             return ResponseEntity
@@ -51,6 +52,7 @@ public class MainController {
             if (urls.isEmpty()){    // 모든 url 검사결과 웹페이지 url이 없는 경우
                 Map<String, Object> responseBody = new HashMap<>();
                 responseBody.put("status", "fail");
+                responseBody.put("code", 421);
                 responseBody.put("message", "all url is not available.");
 
                 return ResponseEntity
@@ -67,6 +69,7 @@ public class MainController {
                 if (urlContent == null){
                     Map<String, Object> responseBody = new HashMap<>();
                     responseBody.put("status", "fail");
+                    responseBody.put("code", 422);
                     responseBody.put("message", "url detected with no content.");
 
                     return ResponseEntity
@@ -91,6 +94,7 @@ public class MainController {
 
                     Map<String, Object> responseBody = new HashMap<>();
                     responseBody.put("status", "success");
+                    responseBody.put("code", 200);
                     responseBody.put("message", "Detection complete.");
                     responseBody.put("result", detectResult);
                     responseBody.put("summarize", summaryContent);
@@ -106,6 +110,7 @@ public class MainController {
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
+            responseBody.put("code", 200);
             responseBody.put("message", "Detection complete.");
             responseBody.put("result", firstResult);
             responseBody.put("summarize", summaryContent);
