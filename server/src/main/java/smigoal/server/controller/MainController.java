@@ -28,21 +28,21 @@ public class MainController {
     private final ModelService modelService;
     private final URLCheckService urlCheckService;
 
-    @PostMapping("")
-    public ResponseEntity<Map<String, Object>> smishingCheck(@RequestBody QuestionDTO request) {
-        List<String> keyward;
+    @PostMapping("/url")
+    public ResponseEntity<Map<String, Object>> urlCheck(@RequestBody QuestionDTO request) {
+        List<String> keyword;
 
-        if ((request.url==null || request.url.length == 0) && request.message==null){    // url, 문자 내용 둘 다 없는 경우
+        if (request.url==null || request.url.length == 0){
             log.info("error : url & message not available.");
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "fail");
-            responseBody.put("message", "url & message not available.");
+            responseBody.put("message", "url not available.");
 
             return ResponseEntity
                     .badRequest()
                     .body(responseBody);
-        }else if(request.url!=null && request.url.length != 0){    // url이 있는 경우
+        }else {    // url이 있는 경우
             log.info("case 1 : url exist");
 
             List<String> urls = urlCheckService.getWebpageURL(request.url);
@@ -76,8 +76,8 @@ public class MainController {
 
                 urlContents.add(urlContent);
 
-                keyward = chatService.generateText(urlContent);
-                ModelResponseDto detectResult = detectionFromKeywords(keyward);
+                keyword = chatService.generateText(urlContent);
+                ModelResponseDto detectResult = detectionFromKeywords(keyword);
 
                 if (i == 0) {
                     firstResult = detectResult;
@@ -114,48 +114,60 @@ public class MainController {
             return ResponseEntity
                     .ok()
                     .body(responseBody);
-        }else{  // 문자 내용만 있는 경우
-            log.info("case 2 : url does not exist");
-            keyward = chatService.generateText(request.message);
-            ModelResponseDto result = detectionFromKeywords(keyward);
+        }
+    }
+
+    @PostMapping("/message")
+    public ResponseEntity<Map<String, Object>> messageCheck(@RequestBody String message){
+        if (message == null || message.length() == 0) {
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("status", "fail");
+            responseBody.put("message", "message not available.");
+
+            return ResponseEntity
+                    .ok()
+                    .body(responseBody);
+        } else {
+            List<String> keyword = chatService.generateText(message);
+            ModelResponseDto detectResult = detectionFromKeywords(keyword);
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
             responseBody.put("message", "Detection complete.");
-            responseBody.put("result", result);
+            responseBody.put("result", detectResult);
+
             return ResponseEntity
                     .ok()
                     .body(responseBody);
         }
     }
 
-    private ModelResponseDto detectionFromKeywords(List<String> keyward) {
-        if (keyward.size() <= 1){ // 키워드 추출 실패 - 스미싱으로 간주
-            log.info("error : keyward does not exist.");
+
+    private ModelResponseDto detectionFromKeywords(List<String> keyword) {
+        if (keyword.size() <= 1){ // 키워드 추출 실패 - 스미싱으로 간주
+            log.info("error : keyword does not exist.");
             return new ModelResponseDto("smishing");
         }
 
         // 키워드 추출 확인
         log.info("checking keyword");
-        for (int i = 0; i< keyward.size(); i++){
-            log.info("keyward {} = {}", i, keyward.get(i));
+        for (int i = 0; i< keyword.size(); i++){
+            log.info("keyword {} = {}", i, keyword.get(i));
         }
 
         // 모델 통신
-        return modelService.callFlaskService(keyward);
+        return modelService.callFlaskService(keyword);
     }
 
     @Getter
     static class QuestionDTO {
         private String[] url;
-        private String message;
 
         public QuestionDTO() {
         }
 
-        public QuestionDTO(String[] url, String message) {
+        public QuestionDTO(String[] url) {
             this.url = url;
-            this.message = message;
         }
     }
 }
