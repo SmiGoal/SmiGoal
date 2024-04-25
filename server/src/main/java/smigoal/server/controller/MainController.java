@@ -127,6 +127,7 @@ public class MainController {
         if (message == null || message.length() == 0) {
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "fail");
+            responseBody.put("code", 430);
             responseBody.put("message", "message not available.");
 
             return ResponseEntity
@@ -138,6 +139,7 @@ public class MainController {
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
+            responseBody.put("code", 200);
             responseBody.put("message", "Detection complete.");
             responseBody.put("result", detectResult);
 
