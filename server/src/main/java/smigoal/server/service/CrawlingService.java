@@ -85,13 +85,11 @@ public class CrawlingService {
     }
 
     private List<WebElement> findElementSafely(WebDriver driver, By by){
-        for (int attempts = 0; attempts < 3; attempts++) {  // 3번의 기회
+        for (int attempts = 0; attempts < 1; attempts++) {  // 3번의 기회 -> 1번의 기회(성능 때문)
             try {
                 return driver.findElements(by);
             } catch (StaleElementReferenceException e) {    // 해당 웹이 동적인 경우 찾는 중간에 요소가 바뀌면 exception 발생
-                if (attempts == 2) { // 마지막 시도에서도 실패한 경우
-                    break;
-                }
+                break;
             }
         }
         return null;    // null : 요소 찾기 실패
@@ -194,7 +192,7 @@ public class CrawlingService {
                         }
                     }
 
-                    int depth = 5;  // 너무 깊이 탐색하면 동적인 웹사이트의 요소가 변해버려서 오류 발생할 수 있음
+                    int depth = 2;  // 너무 깊이 탐색하면 동적인 웹사이트의 요소가 변해버려서 오류 발생할 수 있음 - 성능 이슈로 5 -> 2로 낮춤
 
                     for (int i=1;i<depth;i++){
                         maxLength1=maxLength2;
