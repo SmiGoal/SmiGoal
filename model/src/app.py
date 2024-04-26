@@ -5,11 +5,17 @@ import torch.nn as nn
 import numpy as np
 from transformers import AlbertForSequenceClassification, AlbertTokenizer
 
+from keyExtraction import extract_meaningful_words as extract
+
 app = Flask(__name__)
 
 @app.route('/test', methods=['POST'])
 def predict():
-    data = request.json
+    data = request.data.decode('utf-8')
+
+    # 키워드 추출
+    data = extract(data)
+
     detection_result = test_model(model_path, data)
 
     result_dict = {
@@ -80,8 +86,8 @@ def test_model(model_path, keyword_list):
 
     return result_object
 
-# model_path = "/app/src/AlbertForSequenceClassification.pt"
-model_path = "./AlbertForSequenceClassification.pt"
+model_path = "/app/src/AlbertForSequenceClassification.pt"
+# model_path = "./AlbertForSequenceClassification.pt"
 
 if __name__ == '__main__':
     app.run(debug=True)

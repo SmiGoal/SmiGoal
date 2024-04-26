@@ -30,8 +30,6 @@ public class MainController {
 
     @PostMapping("/url")
     public ResponseEntity<Map<String, Object>> urlCheck(@RequestBody QuestionDTO request) {
-        List<String> keyword;
-
         if (request.url==null || request.url.length == 0){
             log.info("error : url not available.");
 
@@ -79,8 +77,7 @@ public class MainController {
 
                 urlContents.add(urlContent);
 
-                keyword = chatService.generateText(urlContent);
-                ModelResponseDto detectResult = detectionFromKeywords(keyword);
+                ModelResponseDto detectResult = modelService.callFlaskService(urlContent);
 
                 if (i == 0) {
                     firstResult = detectResult;
@@ -134,8 +131,7 @@ public class MainController {
                     .ok()
                     .body(responseBody);
         } else {
-            List<String> keyword = chatService.generateText(message);
-            ModelResponseDto detectResult = detectionFromKeywords(keyword);
+            ModelResponseDto detectResult = modelService.callFlaskService(message);
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("status", "success");
@@ -147,23 +143,6 @@ public class MainController {
                     .ok()
                     .body(responseBody);
         }
-    }
-
-
-    private ModelResponseDto detectionFromKeywords(List<String> keyword) {
-        if (keyword.size() <= 1){ // 키워드 추출 실패 - 스미싱으로 간주
-            log.info("error : keyword does not exist.");
-            return new ModelResponseDto("smishing");
-        }
-
-        // 키워드 추출 확인
-        log.info("checking keyword");
-        for (int i = 0; i< keyword.size(); i++){
-            log.info("keyword {} = {}", i, keyword.get(i));
-        }
-
-        // 모델 통신
-        return modelService.callFlaskService(keyword);
     }
 
     @Getter

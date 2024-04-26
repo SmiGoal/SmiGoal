@@ -18,11 +18,11 @@ public class ModelService {
         this.webClient = builder
                 .baseUrl("http://smigoal-model:5000")
 //                .baseUrl("http://localhost:5000")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
                 .build();
     }
 
-    public ModelResponseDto callFlaskService(List<String> requestData) {
+    public ModelResponseDto callFlaskService(String requestData) {
         ModelResponseDto response = webClient.post()
                 .uri("/test")
                 .bodyValue(requestData)
