@@ -1,5 +1,6 @@
 package smigoal.server.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class MainController {
     private final ModelService modelService;
     private final URLCheckService urlCheckService;
 
+    @Operation(summary = "URL 스미싱 탐지 API", description = "URL에 대한 스미싱 탐지 진행 후 결과 반환", tags = {"Main"})
     @PostMapping("/url")
     public ResponseEntity<Map<String, Object>> urlCheck(@RequestBody QuestionDTO request) {
         if (request.url==null || request.url.length == 0){
@@ -119,6 +121,7 @@ public class MainController {
         }
     }
 
+    @Operation(summary = "문자 스미싱 탐지 API", description = "문자 내용 대한 스미싱 탐지 진행 후 결과 반환", tags = {"Main"})
     @PostMapping("/message")
     public ResponseEntity<Map<String, Object>> messageCheck(@RequestBody String message){
         if (message == null || message.length() == 0) {
