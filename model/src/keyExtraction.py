@@ -24,7 +24,7 @@ def extract_meaningful_words(text):
     pos_tags = okt.pos(text, norm=True, stem=True)
     
     # 의미있는 형태소만 추출 (불용어 제외) 및 중복 제거
-    meaningful_words = list(set([word for word, pos in pos_tags if pos in ['Noun', 'Verb', 'Adjective', 'Adverb', 'Alpha', 'Foreign' ,'Determiner'] and word not in stopwords]))
+    meaningful_words = list(set([word.strip() for word, pos in pos_tags if pos in ['Noun', 'Verb', 'Adjective', 'Adverb', 'Alpha', 'Foreign' ,'Determiner'] and word.strip() not in stopwords]))
     
     current_season = get_season()
     meaningful_words.insert(0, current_season)
