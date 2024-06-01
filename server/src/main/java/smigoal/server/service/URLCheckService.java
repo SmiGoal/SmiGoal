@@ -16,10 +16,12 @@ public class URLCheckService {
         List<String> webpages = new ArrayList<>();
 
         for (int i=0;i<urls.length;i++){
-            if (checkURL(urls[i])){
-                webpages.add(urls[i]);
-                log.info("urlcheck : {}", urls[i]);
-            }
+//            if (checkURL(urls[i])){
+//                webpages.add(urls[i]);
+//                log.info("urlcheck : {}", urls[i]);
+//            }
+
+            webpages.add(urls[i]);
         }
 
         return webpages;
