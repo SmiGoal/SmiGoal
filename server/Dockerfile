@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y \
     libatspi2.0-0 \
     libgtk-3-0
 
+RUN apt-get install -y wget curl unzip fonts-nanum
+
 # Chrome 다운로드 및 설치
 RUN wget https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.58/linux64/chrome-linux64.zip \
     && unzip chrome-linux64.zip -d /opt/chrome \
